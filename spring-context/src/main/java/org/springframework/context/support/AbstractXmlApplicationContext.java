@@ -55,6 +55,7 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
 	}
 
 	/**
+	 * 使用给定的父容器创建一个新的 AbstractXmlApplicationContext
 	 * Create a new AbstractXmlApplicationContext with the given parent context.
 	 * @param parent the parent context
 	 */

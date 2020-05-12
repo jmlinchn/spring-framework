@@ -56,6 +56,7 @@ public class DefaultResourceLoader implements ResourceLoader {
 
 
 	/**
+	 * 创建一个新的 DefaultResourceLoader，会使用当前线程上下文的类加载器进行加载
 	 * Create a new DefaultResourceLoader.
 	 * <p>ClassLoader access will happen using the thread context class loader
 	 * at the time of this ResourceLoader's initialization.

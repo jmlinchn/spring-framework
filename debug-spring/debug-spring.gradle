@@ -1,0 +1,5 @@
+description = "DebugSpring"
+
+dependencies {
+	compile(project(":spring-context"))
+}

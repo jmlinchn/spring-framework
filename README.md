@@ -1,3 +1,60 @@
+# 如何配置源码
+
+1. 下载Spring源码（`git clone https://github.com/spring-projects/spring-framework.git`），切换到分支 5.1.x（`checkout 5.1.x`），再从中切换出自己的源码阅读分支（`checkout -b debug-5.1.x`）
+    > 最好是 fork 到自己的仓库后再拉取下来，方便添加自定义代码注释后提交到自己的github上
+2. 修改项目默认Gradle配置 `gradle/wrapper/gradle-wrapper.properties`
+    ```properties
+    distributionBase=GRADLE_USER_HOME
+    distributionPath=wrapper/dists
+    distributionUrl=https://services.gradle.org/distributions/gradle-5.6.4-bin.zip # 主要是修改这行gradle版本
+    zipStoreBase=GRADLE_USER_HOME
+    zipStorePath=wrapper/dists
+    ```
+3. 修改 IDEA 的 `File-Setting-Gradle user home` 配置，添加环境变量 `GRADLE_USER_HOME`，作为 gradle 依赖包默认存储地址。
+4. 创建一个模块 `debug-spring`，在模块目录下添加一个 `debug-spring.gradle` 文件，其中引入 `spring-context` 依赖。
+    ```
+    description = "DebugSpring"
+    dependencies {
+    	compile(project(":spring-context"))
+    }
+    ```
+5. 在根目录的 `settings.gradle` 的include中添加一个依赖
+    ```
+    include "debug-spring"
+    ```
+
+# 其他问题
+
+- Q1：下载 Gradle 依赖网速慢怎么办？
+
+修改根目录下的 `build.gradle` 中的**两处**依赖配置为阿里镜像。
+```
+buildscript {
+    ...
+	repositories {
+		maven { url "https://repo.spring.io/plugins-release" } // 第一处
+	}
+    ...
+}
+...
+configure(allprojects) { project ->
+    ...
+    repositories {
+		maven { url "https://repo.spring.io/libs-release" } // 第二处
+		mavenLocal()
+	}
+    ...
+}
+```
+修改链接为 
+`https://maven.aliyun.com/repository/public`
+
+- Q2：模块出现中文乱码怎么办？
+
+在 IDEA 的 `Help-Edit Custom VM Options`，在文件最后添加参数 `-Dfile.encoding=UTF-8`，重启 IDEA。
+
+
+
 # <img src="src/docs/asciidoc/images/spring-framework.png" width="80" height="80"> Spring Framework
 
 This is the home of the Spring Framework: the foundation for all [Spring projects](https://spring.io/projects). Collectively the Spring Framework and the family of Spring projects is often referred to simply as "Spring". 
