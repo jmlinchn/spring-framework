@@ -22,6 +22,9 @@
     ```
     include "debug-spring"
     ```
+6. 打上断点，运行项目的启动类 `/spring-framework/debug-spring/src/main/java/cn/linjianming/spring5/SpringDebugApp.java`。
+
+调试源码，由此开始！
 
 # 其他问题
 
@@ -53,6 +56,9 @@ configure(allprojects) { project ->
 
 在 IDEA 的 `Help-Edit Custom VM Options`，在文件最后添加参数 `-Dfile.encoding=UTF-8`，重启 IDEA。
 
+- Q3：Spring中的所有类都报红，但是能正常启动 `SpringDebugApp.java`，怎么解决？
+
+作者碰到过这个问题，这个是在引入项目时，IDEA的索引没有完全建立。这时候需要点击 `File-Invalid Cache/Restart`，选择`Invalid and Restart`清除缓存，重新进入项目后编译即可。
 
 
 # <img src="src/docs/asciidoc/images/spring-framework.png" width="80" height="80"> Spring Framework
