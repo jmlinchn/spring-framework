@@ -17,6 +17,10 @@
 package org.apache.commons.logging;
 
 /**
+ * 作为 Apache Commons Logging 最小限度日志API的典型，可以自动查找具体日志的实现。
+ * 优先检查 Log4j 2.x API 和 SLF4J 1.7 API，当没有引入相关依赖时，会使用JDK自带的JUL作为日志的实现。
+ * 可以支持使用日志桥接器进行日志实现的桥接，比如JCL-over-SLF4J（XXX-over-XXX的格式）
+ *
  * A minimal incarnation of Apache Commons Logging's {@code LogFactory} API,
  * providing just the common {@link Log} lookup methods. This is inspired
  * by the JCL-over-SLF4J bridge and should be source as well as binary
@@ -52,6 +56,7 @@ package org.apache.commons.logging;
 public abstract class LogFactory {
 
 	/**
+	 * 传入Class对象创建一个该类的Logger
 	 * Convenience method to return a named logger.
 	 * @param clazz containing Class from which a log name will be derived
 	 */
@@ -60,6 +65,7 @@ public abstract class LogFactory {
 	}
 
 	/**
+	 * 使用Spring中的LogAdapter类来获取Logger，适配器会根据项目中的依赖确定Logger类型，
 	 * Convenience method to return a named logger.
 	 * @param name logical name of the <code>Log</code> instance to be returned
 	 */

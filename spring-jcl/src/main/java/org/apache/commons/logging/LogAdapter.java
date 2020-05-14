@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.spi.LocationAwareLogger;
 
 /**
+ * LogFactory#getLog(String name)方法创建日志实例时调用，根据项目中的依赖确定日志实例类型，LOG4J > SLF4J_LAL > SLF4J > JUL（当没有前面依赖时的兜底实现）
  * Spring's common JCL adapter behind {@link LogFactory} and {@link LogFactoryService}.
  * Detects the presence of Log4j 2.x / SLF4J, falling back to {@code java.util.logging}.
  *
@@ -80,6 +81,8 @@ final class LogAdapter {
 
 
 	/**
+	 * 根据选择的LogAPI创建真正的Log实例，
+	 * 从 switch 语句来看，加载是由优先级的，是LogAPI的枚举对象 LOG4J > SLF4J_LAL > SLF4J > JUL
 	 * Create an actual {@link Log} instance for the selected API.
 	 * @param name the logger name
 	 */

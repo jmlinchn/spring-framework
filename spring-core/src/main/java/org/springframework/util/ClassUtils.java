@@ -168,6 +168,10 @@ public abstract class ClassUtils {
 	}
 
 	/**
+	 * 按 当前线程的ClassLoader -> 当前类的ClassLoader -> 默认的ClassLoader(SystemClassLoader，也称作AppClassLoader)
+	 * 的顺序取到第一个不为空的 ClassLoader
+	 * 原因可参考：https://www.jianshu.com/p/d6ceeaafe9c5
+	 *
 	 * Return the default ClassLoader to use: typically the thread context
 	 * ClassLoader, if available; the ClassLoader that loaded the ClassUtils
 	 * class will be used as fallback.
@@ -185,12 +189,14 @@ public abstract class ClassUtils {
 	public static ClassLoader getDefaultClassLoader() {
 		ClassLoader cl = null;
 		try {
+			// 获取当前线程的ClassLoader
 			cl = Thread.currentThread().getContextClassLoader();
 		}
 		catch (Throwable ex) {
 			// Cannot access thread context ClassLoader - falling back...
 		}
 		if (cl == null) {
+			// 没有找到当前线程的ClassLoader，获取当前类的ClassLoader
 			// No thread context class loader -> use class loader of this class.
 			cl = ClassUtils.class.getClassLoader();
 			if (cl == null) {

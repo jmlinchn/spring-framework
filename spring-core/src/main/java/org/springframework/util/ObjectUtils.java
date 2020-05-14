@@ -600,6 +600,7 @@ public abstract class ObjectUtils {
 	//---------------------------------------------------------------------
 
 	/**
+	 * 返回对象的全局身份标识ID
 	 * Return a String representation of an object's overall identity.
 	 * @param obj the object (may be {@code null})
 	 * @return the object's identity as String representation,
@@ -609,10 +610,12 @@ public abstract class ObjectUtils {
 		if (obj == null) {
 			return EMPTY_STRING;
 		}
+		// 返回对象的全局身份标识ID：全类名+十六进制标识码。
 		return obj.getClass().getName() + "@" + getIdentityHexString(obj);
 	}
 
 	/**
+	 * 返回对象的十六进制身份哈希码
 	 * Return a hex String form of an object's identity hash code.
 	 * @param obj the object
 	 * @return the object's identity code in hex notation
