@@ -83,6 +83,9 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;
 
 /**
+ * 作为 ApplicationContext 的抽象实现类。
+ * 简单实现一些通用上下文的功能，不强制要求配置本类型。使用到模板方法设计模式，具体的子类需要实现模板父类的抽象方法。
+ *
  * Abstract implementation of the {@link org.springframework.context.ApplicationContext}
  * interface. Doesn't mandate the type of storage used for configuration; simply
  * implements common context functionality. Uses the Template Method design pattern,
@@ -155,15 +158,22 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		// Eagerly load the ContextClosedEvent class to avoid weird classloader issues
 		// on application shutdown in WebLogic 8.1. (Reported by Dustin Woods.)
 
+		// 预加载 ContextClosedEvent 以避免在 WebLogic 8.1 上出现的应用关闭时 classloader 出现的问题
 		// org.springframework.context.event.ContextClosedEvent
 		ContextClosedEvent.class.getName();
 	}
 
 
-	/** Logger used by this class. Available to subclasses. */
+	/**
+	 * 本类及子类使用到日志记录器
+	 * Logger used by this class. Available to subclasses.
+	 */
 	protected final Log logger = LogFactory.getLog(getClass());
 
-	/** Unique id for this context, if any. */
+	/**
+	 * 本上下文(Context)的唯一标识名称
+	 * Unique id for this context, if any.
+	 */
 	private String id = ObjectUtils.identityToString(this);
 
 	/** Display name. */
@@ -177,13 +187,19 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	@Nullable
 	private ConfigurableEnvironment environment;
 
-	/** BeanFactoryPostProcessors to apply on refresh. */
+	/**
+	 * BeanFactory后置处理器列表：在 refresh() 方法中使用到。
+	 * BeanFactoryPostProcessors to apply on refresh.
+	 */
 	private final List<BeanFactoryPostProcessor> beanFactoryPostProcessors = new ArrayList<>();
 
 	/** System time in milliseconds when this context started. */
 	private long startupDate;
 
-	/** Flag that indicates whether this context is currently active. */
+	/**
+	 * 标记当前上下文(context)是否是激活状态。
+	 * Flag that indicates whether this context is currently active.
+	 */
 	private final AtomicBoolean active = new AtomicBoolean();
 
 	/** Flag that indicates whether this context has been closed already. */
@@ -232,6 +248,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	}
 
 	/**
+	 * 使用给定的父容器创建一个新的 AbstractApplicationContext
 	 * Create a new AbstractApplicationContext with the given parent context.
 	 * @param parent the parent context
 	 */

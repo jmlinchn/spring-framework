@@ -52,6 +52,7 @@ public abstract class AbstractRefreshableConfigApplicationContext extends Abstra
 	}
 
 	/**
+	 * 使用给定的父容器创建一个新的 AbstractRefreshableConfigApplicationContext
 	 * Create a new AbstractRefreshableConfigApplicationContext with the given parent context.
 	 * @param parent the parent context
 	 */
