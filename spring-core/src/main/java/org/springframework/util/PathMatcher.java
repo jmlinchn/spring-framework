@@ -36,6 +36,8 @@ import java.util.Map;
 public interface PathMatcher {
 
 	/**
+	 * 给定的参数 path 是否可以被本类的一个实现类匹配，
+	 * 如果返回 false，则不必在对该字符串 path 进行 {@link #match(String, String)} 处理
 	 * Does the given {@code path} represent a pattern that can be matched
 	 * by an implementation of this interface?
 	 * <p>If the return value is {@code false}, then the {@link #match}

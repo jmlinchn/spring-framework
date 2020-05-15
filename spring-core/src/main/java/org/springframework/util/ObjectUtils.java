@@ -610,7 +610,7 @@ public abstract class ObjectUtils {
 		if (obj == null) {
 			return EMPTY_STRING;
 		}
-		// 返回对象的全局身份标识ID：全类名+十六进制标识码。
+		// 返回对象的全局身份标识ID：全类名+@+十六进制标识码。
 		return obj.getClass().getName() + "@" + getIdentityHexString(obj);
 	}
 

@@ -50,8 +50,10 @@ public class DefaultResourceLoader implements ResourceLoader {
 	@Nullable
 	private ClassLoader classLoader;
 
-	// 资源解析器，根据传入的 location 格式不同，解析不同的路径
-	// 如：/xxx classpath:xxx C://xxx 等格式都有对应的解析器
+	/**
+	 * 资源解析器，根据传入的 location 格式不同，解析不同的路径
+	 * 如：/xxx、classpath:xxx、C://xxx 等格式都有对应的解析器
+ 	 */
 	private final Set<ProtocolResolver> protocolResolvers = new LinkedHashSet<>(4);
 
 	private final Map<Class<?>, Map<Resource, ?>> resourceCaches = new ConcurrentHashMap<>(4);

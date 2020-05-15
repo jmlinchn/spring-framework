@@ -27,6 +27,11 @@ import org.springframework.core.io.ProtocolResolver;
 import org.springframework.lang.Nullable;
 
 /**
+ * 本接口（ConfigurableApplicationContext）被绝大部分的 applicationContext 所实现，
+ * 提供配置 {@link org.springframework.context.ApplicationContext} 接口的一些基础设施。
+ * 本接口中封装了一些配置（比如下面的常量属性）和生命周期方法，避免了直接将这些常量值显式地写在实现类中。
+ * 本接口中的方法只应该在启动和关闭 Context 的代码中调用。
+ *
  * SPI interface to be implemented by most if not all application contexts.
  * Provides facilities to configure an application context in addition
  * to the application context client methods in the
@@ -160,6 +165,8 @@ public interface ConfigurableApplicationContext extends ApplicationContext, Life
 	void refresh() throws BeansException, IllegalStateException;
 
 	/**
+	 * 在 JVM 运行环境中注册一个关闭本 SpringContext 的钩子方法。
+	 *
 	 * Register a shutdown hook with the JVM runtime, closing this context
 	 * on JVM shutdown unless it has already been closed at that time.
 	 * <p>This method can be called multiple times. Only one shutdown hook
@@ -170,6 +177,10 @@ public interface ConfigurableApplicationContext extends ApplicationContext, Life
 	void registerShutdownHook();
 
 	/**
+	 * 关闭本 ApplicationContext，释放本接口实现所持有的所有资源和锁（包含销毁所有单例Bean缓存等操作）。
+	 * 因为父 Context 也有自己的生命周期，因此一定不要去调用父 Context 对象的 close() 方法。
+	 * 本方法可以多次调用而不会产生副作用，因为 close() 已经关闭的 Context 操作会被忽视。
+	 *
 	 * Close this application context, releasing all resources and locks that the
 	 * implementation might hold. This includes destroying all cached singleton beans.
 	 * <p>Note: Does <i>not</i> invoke {@code close} on a parent context;

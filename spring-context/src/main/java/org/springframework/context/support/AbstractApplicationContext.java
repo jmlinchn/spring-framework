@@ -171,12 +171,15 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	protected final Log logger = LogFactory.getLog(getClass());
 
 	/**
-	 * 本上下文(Context)的唯一标识名称
+	 * 本上下文(Context)的唯一标识名称，形式：org.springframework.context.support.ClassPathXmlApplicationContext@c818063
 	 * Unique id for this context, if any.
 	 */
 	private String id = ObjectUtils.identityToString(this);
 
-	/** Display name. */
+	/**
+	 * 展示名称，与前面的 id 相同，形式：org.springframework.context.support.ClassPathXmlApplicationContext@c818063
+	 * Display name.
+	 */
 	private String displayName = ObjectUtils.identityToString(this);
 
 	/** Parent context. */
@@ -188,7 +191,9 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	private ConfigurableEnvironment environment;
 
 	/**
-	 * BeanFactory后置处理器列表：在 refresh() 方法中使用到。
+	 * BeanFactoryPostProcessor后置处理器列表。
+	 * 在 {@link #addBeanFactoryPostProcessor(BeanFactoryPostProcessor)} 中添加 BeanFactoryPostProcessor，
+	 * 在 {@link #refresh()#invokeBeanFactoryPostProcessors(ConfigurableListableBeanFactory)} 中被解析。
 	 * BeanFactoryPostProcessors to apply on refresh.
 	 */
 	private final List<BeanFactoryPostProcessor> beanFactoryPostProcessors = new ArrayList<>();
@@ -197,15 +202,25 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	private long startupDate;
 
 	/**
-	 * 标记当前上下文(context)是否是激活状态。
+	 * 标记当前上下文(context)是否是激活状态，
+	 * 在 {@link #prepareRefresh()} 时设置为 true，在 {@link #cancelRefresh(BeansException)} 和 {@link #doClose()} 时设置为 false，
+	 * 主要用在 {@link #isActive()} 和 {@link #assertBeanFactoryActive()} 等方法判断 context 是否激活。
 	 * Flag that indicates whether this context is currently active.
 	 */
 	private final AtomicBoolean active = new AtomicBoolean();
 
-	/** Flag that indicates whether this context has been closed already. */
+	/**
+	 * 判断容器是否已经关闭的标志（使用原子操作类 AtomicBoolean），
+	 * 主要用在 {@link #assertBeanFactoryActive()} 中，做容器是否在运行状态的断言
+	 * Flag that indicates whether this context has been closed already.
+	 */
 	private final AtomicBoolean closed = new AtomicBoolean();
 
-	/** Synchronization monitor for the "refresh" and "destroy". */
+	/**
+	 * 作为 {@link #refresh()}、{@link #registerShutdownHook()}、{@link #close()} 等方法的同步监视器，
+	 * 即用作同步代码块的同步对象 synchronized (startupShutdownMonitor) { 同步代码 }
+	 * Synchronization monitor for the "refresh" and "destroy".
+	 */
 	private final Object startupShutdownMonitor = new Object();
 
 	/** Reference to the JVM shutdown hook, if registered. */
@@ -227,7 +242,11 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	@Nullable
 	private ApplicationEventMulticaster applicationEventMulticaster;
 
-	/** Statically specified listeners. */
+	/**
+	 * 在 {@link #addApplicationListener(ApplicationListener<?>)}中添加 ApplicationListener，
+	 * 在 {@link #registerListeners()} 中进行监听器注册。
+	 * Statically specified listeners.
+	 */
 	private final Set<ApplicationListener<?>> applicationListeners = new LinkedHashSet<>();
 
 	/** Local listeners registered before refresh. */
@@ -263,6 +282,9 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	//---------------------------------------------------------------------
 
 	/**
+	 * 设置 applicationContext 的唯一id，
+	 * 默认是该 context 实例的对象 id；
+	 * 或者当该 context 被定义为 bean 时，这个 contextBean 的名称。
 	 * Set the unique id of this application context.
 	 * <p>Default is the object id of the context instance, or the name
 	 * of the context bean if the context is itself defined as a bean.
@@ -284,6 +306,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	}
 
 	/**
+	 * 为该 context 设置一个友好的名称，一般会在该 context 实现类实例初始化过程中赋值完成，
+	 * 默认是该 context 实例的对象 id。
 	 * Set a friendly name for this context.
 	 * Typically done during initialization of concrete context implementations.
 	 * <p>Default is the object id of the context instance.
@@ -460,6 +484,10 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	}
 
 	/**
+	 * 返回一个用于解析 ResourcePatternResolver 资源路径的解析器，这里的解析器实现类是
+	 * {@link org.springframework.core.io.support.PathMatchingResourcePatternResolver}，
+	 *
+	 *
 	 * Return the ResourcePatternResolver to use for resolving location patterns
 	 * into Resource instances. Default is a
 	 * {@link org.springframework.core.io.support.PathMatchingResourcePatternResolver},

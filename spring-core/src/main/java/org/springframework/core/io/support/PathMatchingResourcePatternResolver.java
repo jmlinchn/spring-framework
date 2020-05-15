@@ -56,6 +56,19 @@ import org.springframework.util.ResourceUtils;
 import org.springframework.util.StringUtils;
 
 /**
+ * 路径示例：
+ * 1.真实匹配路径 real URLs： file:C:/context.xml
+ * 2.伪前缀路径 pseudo-URLs：classpath:/context.xml
+ * 3.简单无前缀路径（相对路径） simple un-prefixed paths：/WEB-INF/context.xml
+ * 4.Ant风格带正则通配的路径 Ant-style Patterns:
+ *  - /WEB-INF/*-context.xml
+ *  - com/mycompany/** /applicationContext.xml
+ *  - file:C:/some/path/*-context.xml
+ *
+ * 本实现类可以解析匹配的资源路径为一个或多个匹配的资源对象（Resource），
+ * 用于匹配的资源路径可以是简单的唯一匹配路径；
+ * 也可以是包含伪URL前缀的 classpath*，Ant 风格的支持正则通配的路径。
+ *
  * A {@link ResourcePatternResolver} implementation that is able to resolve a
  * specified resource location path into one or more matching Resources.
  * The source path may be a simple path which has a one-to-one mapping to a
@@ -277,6 +290,7 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
 	@Override
 	public Resource[] getResources(String locationPattern) throws IOException {
 		Assert.notNull(locationPattern, "Location pattern must not be null");
+		// 匹配资源路径是否以 "classpath*:" 开头
 		if (locationPattern.startsWith(CLASSPATH_ALL_URL_PREFIX)) {
 			// a class path resource (multiple resources for same name possible)
 			if (getPathMatcher().isPattern(locationPattern.substring(CLASSPATH_ALL_URL_PREFIX.length()))) {

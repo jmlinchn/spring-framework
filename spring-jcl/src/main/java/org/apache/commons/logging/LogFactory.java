@@ -65,7 +65,7 @@ public abstract class LogFactory {
 	}
 
 	/**
-	 * 使用Spring中的LogAdapter类来获取Logger，适配器会根据项目中的依赖确定Logger类型，
+	 * 使用Spring中的LogAdapter类来获取Logger，适配器会根据项目中的依赖确定Logger类型。
 	 * Convenience method to return a named logger.
 	 * @param name logical name of the <code>Log</code> instance to be returned
 	 */
