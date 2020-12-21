@@ -82,7 +82,7 @@ final class LogAdapter {
 
 	/**
 	 * 根据选择的LogAPI创建真正的Log实例，
-	 * 从 switch 语句来看，加载是由优先级的，是LogAPI的枚举对象 LOG4J > SLF4J_LAL > SLF4J > JUL
+	 * 从 switch 语句来看，加载是具有优先级的，根据LogAPI的枚举对象 LOG4J > SLF4J_LAL > SLF4J > JUL
 	 * Create an actual {@link Log} instance for the selected API.
 	 * @param name the logger name
 	 */
@@ -95,6 +95,7 @@ final class LogAdapter {
 			case SLF4J:
 				return Slf4jAdapter.createLog(name);
 			default:
+				// 若前面的几个日志框架都不存在，则会使用JUL作为默认的日志框架
 				// Defensively use lazy-initializing adapter class here as well since the
 				// java.logging module is not present by default on JDK 9. We are requiring
 				// its presence if neither Log4j nor SLF4J is available; however, in the

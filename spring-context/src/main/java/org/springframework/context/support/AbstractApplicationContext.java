@@ -219,6 +219,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	/**
 	 * 作为 {@link #refresh()}、{@link #registerShutdownHook()}、{@link #close()} 等方法的同步监视器，
 	 * 即用作同步代码块的同步对象 synchronized (startupShutdownMonitor) { 同步代码 }
+	 *
 	 * Synchronization monitor for the "refresh" and "destroy".
 	 */
 	private final Object startupShutdownMonitor = new Object();
@@ -263,6 +264,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 * Create a new AbstractApplicationContext with no parent.
 	 */
 	public AbstractApplicationContext() {
+		// 获取资源路径解析器
 		this.resourcePatternResolver = getResourcePatternResolver();
 	}
 
@@ -511,6 +513,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	//---------------------------------------------------------------------
 
 	/**
+	 * 设置父容器
 	 * Set the parent of this application context.
 	 * <p>The parent {@linkplain ApplicationContext#getEnvironment() environment} is
 	 * {@linkplain ConfigurableEnvironment#merge(ConfigurableEnvironment) merged} with

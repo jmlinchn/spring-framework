@@ -13,5 +13,6 @@ public class SpringDebugApp {
 		ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext("application.xml");
 		ILoginService loginService = applicationContext.getBean(ILoginService.class);
 		loginService.login();
+		System.out.println("============================运行结束============================");
 	}
 }

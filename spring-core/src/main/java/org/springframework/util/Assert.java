@@ -187,6 +187,7 @@ public abstract class Assert {
 	}
 
 	/**
+	 * 断言判断对象不为空
 	 * Assert that an object is not {@code null}.
 	 * <pre class="code">Assert.notNull(clazz, "The class must not be null");</pre>
 	 * @param object the object to check

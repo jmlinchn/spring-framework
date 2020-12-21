@@ -216,6 +216,7 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
 
 	private final ResourceLoader resourceLoader;
 
+	// Ant风格 路径匹配器
 	private PathMatcher pathMatcher = new AntPathMatcher();
 
 
@@ -235,6 +236,7 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
 	 * actual resources with
 	 */
 	public PathMatchingResourcePatternResolver(ResourceLoader resourceLoader) {
+		// 资源加载器初始化完成后不能为空
 		Assert.notNull(resourceLoader, "ResourceLoader must not be null");
 		this.resourceLoader = resourceLoader;
 	}

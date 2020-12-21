@@ -1,3 +1,5 @@
+debug-spring/build
+
 *.java.hsp
 *.sonarj
 *.sw*

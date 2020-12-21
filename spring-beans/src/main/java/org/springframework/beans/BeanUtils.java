@@ -98,6 +98,7 @@ public abstract class BeanUtils {
 	}
 
 	/**
+	 * 使用类中优先级最高或默认的构造器实例化一个对象
 	 * Instantiate a class using its 'primary' constructor (for Kotlin classes,
 	 * potentially having default arguments declared) or its default constructor
 	 * (for regular Java classes, expecting a standard no-arg setup).

@@ -229,6 +229,7 @@ public class BeanDefinitionParserDelegate {
 
 	private final XmlReaderContext readerContext;
 
+	// defaults 是在 XML 中的全局配置
 	private final DocumentDefaultsDefinition defaults = new DocumentDefaultsDefinition();
 
 	private final ParseState parseState = new ParseState();
@@ -406,6 +407,7 @@ public class BeanDefinitionParserDelegate {
 	}
 
 	/**
+	 * 将 element 转换成 beanDefinition
 	 * Parses the supplied {@code <bean>} element. May return {@code null}
 	 * if there were errors during parse. Errors are reported to the
 	 * {@link org.springframework.beans.factory.parsing.ProblemReporter}.
@@ -431,7 +433,7 @@ public class BeanDefinitionParserDelegate {
 		}
 
 		if (containingBean == null) {
-			checkNameUniqueness(beanName, aliases, ele);
+			checkNameUniqueness(beanName, aliases, ele); // 校验 bean 的名称唯一性
 		}
 
 		AbstractBeanDefinition beanDefinition = parseBeanDefinitionElement(ele, beanName, containingBean);
@@ -472,6 +474,7 @@ public class BeanDefinitionParserDelegate {
 	}
 
 	/**
+	 * 验证将要注册的 bean 的名称和别名是唯一的
 	 * Validate that the specified bean name and aliases have not been used already
 	 * within the current level of beans element nesting.
 	 */
@@ -512,10 +515,10 @@ public class BeanDefinitionParserDelegate {
 		}
 
 		try {
-			AbstractBeanDefinition bd = createBeanDefinition(className, parent);
+			AbstractBeanDefinition bd = createBeanDefinition(className, parent); // 创建通用的抽象 BD，设置本类和父类的名称
 
-			parseBeanDefinitionAttributes(ele, beanName, containingBean, bd);
-			bd.setDescription(DomUtils.getChildElementValueByTagName(ele, DESCRIPTION_ELEMENT));
+			parseBeanDefinitionAttributes(ele, beanName, containingBean, bd); // 将 XML 中的属性设置到 bean definition 中，包含 init-method, destroy-method, factory-bean, factory-method 等
+			bd.setDescription(DomUtils.getChildElementValueByTagName(ele, DESCRIPTION_ELEMENT)); // 设置描述属性
 
 			parseMetaElements(ele, bd);
 			parseLookupOverrideSubElements(ele, bd.getMethodOverrides());
@@ -556,6 +559,7 @@ public class BeanDefinitionParserDelegate {
 	public AbstractBeanDefinition parseBeanDefinitionAttributes(Element ele, String beanName,
 			@Nullable BeanDefinition containingBean, AbstractBeanDefinition bd) {
 
+		// 解析 Scope，单例 Singleton，原型 Prototype
 		if (ele.hasAttribute(SINGLETON_ATTRIBUTE)) {
 			error("Old 1.x 'singleton' attribute in use - upgrade to 'scope' declaration", ele);
 		}
@@ -571,12 +575,14 @@ public class BeanDefinitionParserDelegate {
 			bd.setAbstract(TRUE_VALUE.equals(ele.getAttribute(ABSTRACT_ATTRIBUTE)));
 		}
 
+		// 判断是否懒加载
 		String lazyInit = ele.getAttribute(LAZY_INIT_ATTRIBUTE);
 		if (isDefaultValue(lazyInit)) {
 			lazyInit = this.defaults.getLazyInit();
 		}
 		bd.setLazyInit(TRUE_VALUE.equals(lazyInit));
 
+		// 判断类型注入 autowire
 		String autowire = ele.getAttribute(AUTOWIRE_ATTRIBUTE);
 		bd.setAutowireMode(getAutowireMode(autowire));
 
@@ -586,7 +592,7 @@ public class BeanDefinitionParserDelegate {
 		}
 
 		String autowireCandidate = ele.getAttribute(AUTOWIRE_CANDIDATE_ATTRIBUTE);
-		if (isDefaultValue(autowireCandidate)) {
+		if (isDefaultValue(autowireCandidate)) { // 根据类型注入 - 默认注入
 			String candidatePattern = this.defaults.getAutowireCandidates();
 			if (candidatePattern != null) {
 				String[] patterns = StringUtils.commaDelimitedListToStringArray(candidatePattern);
@@ -597,32 +603,32 @@ public class BeanDefinitionParserDelegate {
 			bd.setAutowireCandidate(TRUE_VALUE.equals(autowireCandidate));
 		}
 
-		if (ele.hasAttribute(PRIMARY_ATTRIBUTE)) {
+		if (ele.hasAttribute(PRIMARY_ATTRIBUTE)) { // 设置 primary 属性，作为优先 bean
 			bd.setPrimary(TRUE_VALUE.equals(ele.getAttribute(PRIMARY_ATTRIBUTE)));
 		}
 
-		if (ele.hasAttribute(INIT_METHOD_ATTRIBUTE)) {
+		if (ele.hasAttribute(INIT_METHOD_ATTRIBUTE)) { // 设置初始化方法 init-method，在 bean 加载完成时执行该方法
 			String initMethodName = ele.getAttribute(INIT_METHOD_ATTRIBUTE);
 			bd.setInitMethodName(initMethodName);
 		}
-		else if (this.defaults.getInitMethod() != null) {
+		else if (this.defaults.getInitMethod() != null) { // 查看 XML 中是否有全局的 init-method 配置
 			bd.setInitMethodName(this.defaults.getInitMethod());
 			bd.setEnforceInitMethod(false);
 		}
 
-		if (ele.hasAttribute(DESTROY_METHOD_ATTRIBUTE)) {
+		if (ele.hasAttribute(DESTROY_METHOD_ATTRIBUTE)) { // 设置销毁方法 destroy-method，在 bean 销毁之前执行该方法
 			String destroyMethodName = ele.getAttribute(DESTROY_METHOD_ATTRIBUTE);
 			bd.setDestroyMethodName(destroyMethodName);
 		}
-		else if (this.defaults.getDestroyMethod() != null) {
+		else if (this.defaults.getDestroyMethod() != null) { // 查看 XML 中是否有全局的 destroy-method 配置
 			bd.setDestroyMethodName(this.defaults.getDestroyMethod());
 			bd.setEnforceDestroyMethod(false);
 		}
 
-		if (ele.hasAttribute(FACTORY_METHOD_ATTRIBUTE)) {
+		if (ele.hasAttribute(FACTORY_METHOD_ATTRIBUTE)) { // 设置 工厂方法 factory-method
 			bd.setFactoryMethodName(ele.getAttribute(FACTORY_METHOD_ATTRIBUTE));
 		}
-		if (ele.hasAttribute(FACTORY_BEAN_ATTRIBUTE)) {
+		if (ele.hasAttribute(FACTORY_BEAN_ATTRIBUTE)) { // 设置工厂 factory-bean，调用工厂方法 factory-method 来生成 bean definition
 			bd.setFactoryBeanName(ele.getAttribute(FACTORY_BEAN_ATTRIBUTE));
 		}
 
@@ -644,12 +650,15 @@ public class BeanDefinitionParserDelegate {
 	}
 
 	/**
+	 * 解析指定元素下的 meta 元素
 	 * Parse the meta elements underneath the given element, if any.
 	 */
 	public void parseMetaElements(Element ele, BeanMetadataAttributeAccessor attributeAccessor) {
 		NodeList nl = ele.getChildNodes();
+		// 遍历子节点
 		for (int i = 0; i < nl.getLength(); i++) {
 			Node node = nl.item(i);
+			// <meta key="special-data" value="sprecial stragey" />
 			if (isCandidateElement(node) && nodeNameEquals(node, META_ELEMENT)) {
 				Element metaElement = (Element) node;
 				String key = metaElement.getAttribute(KEY_ATTRIBUTE);
@@ -1496,6 +1505,7 @@ public class BeanDefinitionParserDelegate {
 	}
 
 	/**
+	 * 获取给定节点的本地名称
 	 * Get the local name for the supplied {@link Node}.
 	 * <p>The default implementation calls {@link Node#getLocalName}.
 	 * Subclasses may override the default implementation to provide a

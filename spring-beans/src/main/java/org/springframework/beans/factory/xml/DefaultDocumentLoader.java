@@ -68,7 +68,7 @@ public class DefaultDocumentLoader implements DocumentLoader {
 	@Override
 	public Document loadDocument(InputSource inputSource, EntityResolver entityResolver,
 			ErrorHandler errorHandler, int validationMode, boolean namespaceAware) throws Exception {
-
+		// 创建一个文档构建工厂类
 		DocumentBuilderFactory factory = createDocumentBuilderFactory(validationMode, namespaceAware);
 		if (logger.isTraceEnabled()) {
 			logger.trace("Using JAXP provider [" + factory.getClass().getName() + "]");
@@ -97,7 +97,7 @@ public class DefaultDocumentLoader implements DocumentLoader {
 				// Enforce namespace aware for XSD...
 				factory.setNamespaceAware(true);
 				try {
-					factory.setAttribute(SCHEMA_LANGUAGE_ATTRIBUTE, XSD_SCHEMA_LANGUAGE);
+					factory.setAttribute(SCHEMA_LANGUAGE_ATTRIBUTE, XSD_SCHEMA_LANGUAGE); // 设置属性后会构建一个 XMLReader
 				}
 				catch (IllegalArgumentException ex) {
 					ParserConfigurationException pcex = new ParserConfigurationException(
@@ -114,6 +114,7 @@ public class DefaultDocumentLoader implements DocumentLoader {
 	}
 
 	/**
+	 * 创建一个 JAXP DocumentBuilder 文档构建器，用于读取 Spring XML 配置，生成 BeanDefinitions
 	 * Create a JAXP DocumentBuilder that this bean definition reader
 	 * will use for parsing XML documents. Can be overridden in subclasses,
 	 * adding further initialization of the builder.
