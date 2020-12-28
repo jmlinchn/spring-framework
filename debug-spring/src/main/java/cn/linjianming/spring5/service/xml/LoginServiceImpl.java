@@ -1,4 +1,4 @@
-package cn.linjianming.spring5.service;
+package cn.linjianming.spring5.service.xml;
 
 /**
  * @Author: James Lin
